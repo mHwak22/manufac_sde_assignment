@@ -98,7 +98,7 @@ const AverageData: React.FC<AverageDataProps> = ({ data }) => {
 
   return (
     <div>
-      <h1>Average Yield Crop</h1>
+      <h1>Average Yield and Cultivation Area of Crop</h1>
       <div className="wrapper">
         <Table.ScrollContainer className="year-table" minWidth={200}>
           <Table
