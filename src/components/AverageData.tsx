@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "@mantine/core";
 
-// Define the structure of data for each crop
+// structure(Name, Average yield and Average cultivation ) of data for each crop
 interface CropData {
-  cropName: string; // Name of the crop
-  averageYield: string; // Average yield of the crop between 1950-2020
-  averageArea: string; // Average cultivation area of the crop between 1950-2020
+  cropName: string; 
+  averageYield: string; 
+  averageArea: string; 
   [key: string]: string; // Index signature to allow any other string keys
 }
 
+//props interface for the AverageData component
 interface AverageDataProps {
   data: DataEntry[]; // Prop to pass the data to the component
 }
 
+//structure of a single data entry in the dataset
 interface DataEntry {
   Country: string;
   Year: string;
@@ -22,34 +24,44 @@ interface DataEntry {
   "Area Under Cultivation (UOM:Ha(Hectares))": string | number;
 }
 
+// React functional component to display average yield data by crop
 const AverageData: React.FC<AverageDataProps> = ({ data }) => {
+  // State to store data calculated by crop
   const [dataByCrop, setDataByCrop] = useState<CropData[]>([]);
 
+  // useEffect hook to calculate averages when data changes
   useEffect(() => {
     calculateAverages();
   }, [data]);
 
+  // Function to calculate average yield and area for each crop
   const calculateAverages = () => {
+    // Object to store accumulated yield, area, and count for each crop
     const crops: {
       [key: string]: { yield: number; area: number; count: number };
     } = {};
 
+    // Iterating through each data entry
     data.forEach((entry) => {
+      // Destructure data entry
       const {
         "Crop Name": cropName,
         "Yield Of Crops (UOM:Kg/Ha(KilogramperHectare))": yieldValue,
         "Area Under Cultivation (UOM:Ha(Hectares))": area,
       } = entry;
 
+      // If crop is encountered for the first time, initialize its properties
       if (!crops[cropName]) {
         crops[cropName] = { yield: 0, area: 0, count: 0 };
       }
 
+      // Accumulate yield, area, and count for the crop
       crops[cropName].yield += yieldValue ? Number(yieldValue) : 0;
       crops[cropName].area += area ? Number(area) : 0;
       crops[cropName].count++;
     });
 
+    // Convert accumulated data to an array of CropData objects
     const dataByCrop: CropData[] = Object.entries(crops).map(
       ([cropName, { yield: yieldProp, area, count }]) => ({
         cropName,
@@ -58,9 +70,11 @@ const AverageData: React.FC<AverageDataProps> = ({ data }) => {
       })
     );
 
+    // Set the state with the calculated data by crop
     setDataByCrop(dataByCrop);
   };
 
+  // Table column configuration
   const columns = [
     { title: "Crop", key: "cropName" },
     {
@@ -73,6 +87,7 @@ const AverageData: React.FC<AverageDataProps> = ({ data }) => {
     },
   ];
 
+  // Table rows
   const rows = dataByCrop.map((entry) => (
     <Table.Tr key={entry.cropName}>
       {columns.map((column) => (
@@ -96,11 +111,13 @@ const AverageData: React.FC<AverageDataProps> = ({ data }) => {
           >
             <Table.Thead>
               <Table.Tr>
+                {/* Render table headers */}
                 {columns.map((column) => (
                   <Table.Th key={column.key}>{column.title}</Table.Th>
                 ))}
               </Table.Tr>
             </Table.Thead>
+            {/* Render table body with rows */}
             <Table.Tbody>{rows}</Table.Tbody>
           </Table>
         </Table.ScrollContainer>

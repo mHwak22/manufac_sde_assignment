@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "@mantine/core";
 
-interface ProcductionDataProps {
-  data: DataEntry[];
+// props interface for the ProductionData component
+interface ProductionDataProps {
+  data: DataEntry[]; // Data entry interface array passed as props
 }
 
+// structure of a single data entry in the dataset
 interface DataEntry {
   Year: string;
   "Crop Name": string;
@@ -13,14 +15,19 @@ interface DataEntry {
   "Yield Of Crops (UOM:Kg/Ha(KilogramperHectare))": string | number;
 }
 
-const ProcductionData: React.FC<ProcductionDataProps> = ({ data }) => {
+// React functional component to display production data by year
+const ProductionData: React.FC<ProductionDataProps> = ({ data }) => {
+  // State to store year-wise production data
   const [yearData, setYearData] = useState<any[]>([]);
 
+  // useEffect hook to call findYearMaxMin function when data changes
   useEffect(() => {
     findYearMaxMin();
   }, [data]);
 
+  // Function to find crop with maximum and minimum production for each year
   const findYearMaxMin = () => {
+    // Object to store maximum and minimum production crops for each year
     const yearMap: {
       [year: string]: {
         maxProduction?: string | number;
@@ -30,14 +37,17 @@ const ProcductionData: React.FC<ProcductionDataProps> = ({ data }) => {
       };
     } = {};
 
+    // Iterating through each data entry to populate the yearMap
     data.forEach((entry) => {
       const year = entry["Year"];
       const production = entry["Crop Production (UOM:t(Tonnes))"];
 
+      // If the year entry doesn't exist in the yearMap, initialize it
       if (!yearMap[year]) {
         yearMap[year] = {};
       }
 
+      // Update maximum production crop for the each year
       if (
         !yearMap[year].maxProduction ||
         production! > yearMap[year].maxProduction!
@@ -46,6 +56,7 @@ const ProcductionData: React.FC<ProcductionDataProps> = ({ data }) => {
         yearMap[year].maxCrop = entry["Crop Name"];
       }
 
+      // Update minimum production crop for the each year
       if (
         !yearMap[year].minProduction ||
         production! < yearMap[year].minProduction!
@@ -55,6 +66,7 @@ const ProcductionData: React.FC<ProcductionDataProps> = ({ data }) => {
       }
     });
 
+    // Format year data into an array of objects and set the state
     const formattedYearData = Object.entries(yearMap).map(([year, value]) => ({
       Year: year,
       "Crop with Maximum Production": value.maxCrop || "N/A",
@@ -63,7 +75,9 @@ const ProcductionData: React.FC<ProcductionDataProps> = ({ data }) => {
     setYearData(formattedYearData);
   };
 
+  // Table rows for year data
   const yearRows = yearData.map((entry, index) => {
+    // Extract year from the data, from "Financial Year (Apr - Mar), 1950" format to "1950"
     const year = entry.Year.split(", ")[1];
     return (
       <Table.Tr key={index}>
@@ -102,4 +116,4 @@ const ProcductionData: React.FC<ProcductionDataProps> = ({ data }) => {
   );
 };
 
-export default ProcductionData;
+export default ProductionData;
