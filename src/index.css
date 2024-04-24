@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.year-table {
+  width: 800px;
+  height: 600px;
+  border: 1px;
+  border-color: "burlywood";
+  border-style: solid;
+}
+
+.app-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.left-column {
+  flex: 1;
+  padding-right: 8px;
+  margin-left: 20px;
+  height: 100vh;
+  width: 45%;
+}
+
+.right-column {
+  flex: 1;
+  padding-left: 6px;
+  width: 45%;
+}
+
+.toggle-button {
+  margin-bottom: 20px;
+  
+}
+
+.data-container {
+  border-left: 3px solid #000000;
+  padding: 8px;
+  height: 100vh;
+}
+.all-data-table{
+  width: 800px;
+  height: 650px;
+  border: 1px;
+  border-color: "burlywood";
+  border-style: solid;
+}
